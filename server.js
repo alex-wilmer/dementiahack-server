@@ -1,18 +1,25 @@
 
-import Particle from 'particle-api-js'
+import Koa from 'koa'
+import koaRouter from 'koa-router'
+import html from './html'
+import Home from './Home'
 
-let username = `djazium@gmail.com`
-let password = `musicwizard3`
+/*----------------------------------------------------------------------------*/
 
-let main = async () => {
-  let particle = new Particle()
-  let response = await particle.login({ username, password })
-  let token = response.body.access_token
-  console.log(token)
-  response = await particle.listDevices({ auth: token })
-  let deviceId = response.body[0].id
-  let light = await particle.getVariable({ deviceId, name: `analogvalue`, auth: token })
-  console.log(light)
-}
+let port = process.env.PORT || 3002
+let router = koaRouter()
+let app = new Koa()
 
-main()
+/*----------------------------------------------------------------------------*/
+
+router
+  .get(`/`, ctx => {
+    ctx.body = html(Home)
+  })
+
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
+
+app.listen(port)
+console.log(`Listening on port: ${port}`)
