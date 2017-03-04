@@ -11,14 +11,16 @@ import deviceWatcher from './lib/deviceWatcher'
 import routes from './routes'
 
 type TDataStore = {|
+  deviceThresholds: Object,
   deviceAlarms: Object,
   users: Object,
   contacts: Object,
 |}
 let dataStore: TDataStore = {
-  deviceAlarms: {},   // key = deviceId
-  users: {},          // key = userId
-  contacts: {},       // key = userId
+  deviceThresholds: {},   // key = deviceId
+  deviceAlarms: {},       // key = deviceId
+  users: {},              // key = userId
+  contacts: {},           // key = userId
 }
 
 let port = process.env.PORT || 3002
