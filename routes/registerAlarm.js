@@ -14,7 +14,7 @@ export default ({ router, dataStore }) => {
       ctx.body = { success: false, error: `that device has not been registered to the user` }
       return
     }
-    if (!dataStore.deviceThresholds[deviceId]) {
+    if (!dataStore.devices[deviceId].threshold) {
       ctx.body = { success: false, error: `please set a device threshold before adding an alarm` }
       return
     }
