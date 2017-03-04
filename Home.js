@@ -7,16 +7,18 @@ let Home = compose(
   withState(`state`, `setState`, { value: 0 }),
   lifecycle({
     componentDidMount() {
-      setInterval(() => {
-        console.log('>>>', thingy)
-      }, 1000)
+      console.log('hey')
+      // setInterval(async () => {
+      //   let v = await fetch('/value')
+      //   console.log(v)
+      // }, 500)
     },
   })
 )(({
   state: { value },
 }) => (
   <div>
-    <h1>current resistor value: {value}</h1>
+    <h1>!! current resistor value: {value}</h1>
   </div>
 ))
 

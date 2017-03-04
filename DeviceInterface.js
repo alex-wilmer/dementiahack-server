@@ -3,6 +3,7 @@ import Particle from 'particle-api-js'
 class DeviceInterface {
   token = ``
   particle = {}
+  devices = {}
 
   constructor() {
     this.particle = new Particle()
@@ -15,18 +16,18 @@ class DeviceInterface {
   }
 
   getDeviceValues = async () => {
-    let values = {}
     let response = await this.particle.listDevices({ auth: this.token })
-    for(let device of response.body) {
+    for (let device of response.body) {
       let value = await this.particle.getVariable({
         deviceId: device.id,
         name: `analogvalue`,
-        auth: this.token
+        auth: this.token,
       })
-      values[device.id] = value.body.result
+      this.devices[device.id] = value.body.result
     }
-    return values
   }
+
+  getDeviceValue = id => this.devices[id]
 
   log = (message) => {
     console.log(`PARTICLE:: ${message}`)
