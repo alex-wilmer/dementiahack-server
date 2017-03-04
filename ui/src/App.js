@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { compose, withState, lifecycle } from 'recompose'
+import { compose, withState, lifecycle, withProps } from 'recompose'
 import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom'
 
 import Icon from './Icon'
 
 let api = `http://localhost:3002`
-let id = `35001a001447343432313031`
+let deviceId = `35001a001447343432313031`
 
 let Wrapper = styled.div`
   height: 100vh;
@@ -68,15 +68,33 @@ let Splash = () => (
 )
 
 let New = compose(
-  withRouter
-)(({ history: { push } }) => (
+  withRouter,
+  withProps(({ history: { push } }) => ({
+    postId: async () => {
+      let r = await fetch(`${api}/registerDevice`, {
+        method: `POST`,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({
+          userId: `12345`,
+          deviceId,
+        }),
+      }).then(r => r.json())
+
+      if (r.success) push(`/configure`)
+    },
+  }))
+)(({ postId }) => (
   <Col style={{ padding: `2rem` }}>
     <Text>Enter the device ID found on your Lassie.</Text>
-    <Input type='text' onKeyDown={e => e.key === `Enter` && push(`/configure`)} />
+    <Input type='text' onKeyDown={e => e.key === `Enter` && postId()} />
   </Col>
 ))
 
-let Configure = () => (
+let Configure = compose(
+  withProps({
+
+  })
+)(() => (
   <Col>
     <Text>Is your appliance turned on now?</Text>
     <Row style={{ marginTop: `15px` }}>
@@ -84,7 +102,7 @@ let Configure = () => (
       <Button style={{ marginLeft: `15px` }}>NO</Button>
     </Row>
   </Col>
-)
+))
 
 let App = compose(
   withState(`state`, `setState`, { value: 0 }),
