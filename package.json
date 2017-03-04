@@ -29,6 +29,7 @@
     "react-dom": "^15.4.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.23.0",
     "nodemon": "^1.11.0"
   }
 }
