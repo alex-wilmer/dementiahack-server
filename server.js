@@ -1,6 +1,7 @@
 import DeviceInterface from './DeviceInterface'
 import Koa from 'koa'
 import cors from 'kcors'
+import bp from 'koa-bodyparser'
 import koaRouter from 'koa-router'
 import html from './html'
 import Home from './Home'
@@ -21,12 +22,16 @@ router
     ctx.body = html(Home)
   })
   .get(`/value/:id`, async ctx => {
-    console.log(ctx.params.id)
     ctx.body = deviceInterface.getDeviceValue(ctx.params.id)
+  })
+  .post(`/test`, async ctx => {
+    console.log(123, ctx.request.body)
+    ctx.body = `hey`
   })
 
 app
   .use(cors())
+  .use(bp())
   .use(router.routes())
   .use(router.allowedMethods())
 
