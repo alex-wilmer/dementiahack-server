@@ -5,62 +5,35 @@ import koaRouter from 'koa-router'
 
 import { particle } from './config'
 import DeviceInterface from './DeviceInterface'
+import routes from './routes'
 
 let deviceInterface = new DeviceInterface()
 deviceInterface.login(particle.username, particle.password)
-setInterval(deviceInterface.getDeviceValues, 500)
+setInterval(() => {
+  deviceInterface.getDeviceValues()
+}, 500)
 
-let deviceAlarms = {} // key = deviceId
-let users = {} // key = userId
+// // periodic logger for debugging
+// setInterval(() => {
+//   console.log(`----------------- START: SERVER STATS -----------------`)
+//   console.log(deviceInterface.devices)
+//   console.log(dataStore)
+//   console.log(`------------------- END: SERVER STATS -----------------`)
+// }, 10000)
+
+let dataStore = {
+  deviceAlarms: {},   // key = deviceId
+  users: {},          // key = userId
+  contacts: {},       // key = userId
+}
 
 let port = process.env.PORT || 3002
 let router = koaRouter()
 let app = new Koa()
 
-router
-  .post(`/registerDevice`, async ctx => {
-    let { deviceId, userId } = ctx.request.body
-    if (!deviceId || !userId) {
-      ctx.body = { success: false, error: `missing deviceId or userId` }
-      return
-    }
-    if (!users[userId]) {
-      users[userId] = { devices: [deviceId] }
-    }
-    else {
-      users[userId].devices = [...users[userId].devices, deviceId]
-    }
-    console.log(`/registerDevice :: deviceId: ${deviceId}, userId: ${userId}`)
-    ctx.body = { success: true }
-  })
-  .post(`/registerAlarm`, async ctx => {
-    let { userId, deviceId, safeZone, dangerZone, timer } = ctx.request.body
-    if (!deviceId || !userId || !safeZone || !dangerZone || !timer) {
-      ctx.body = { success: false, error: `missing required parameters` }
-      return
-    }
-    if (!users[userId]) {
-      ctx.body = { success: false, error: `user has not registered a device yet` }
-      return
-    }
-    if (!users[userId].devices.includes(deviceId)) {
-      ctx.body = { success: false, error: `that device has not been registered to the user` }
-      return
-    }
-    deviceAlarms[deviceId] = { userId, safeZone, dangerZone, timer }
-    console.log(`/registerAlarm :: deviceId: ${deviceId}, alarm: `, deviceAlarms[deviceId])
-    ctx.body = { success: true }
-  })
-  .get(`/deviceStatus/:deviceId`, async ctx => {
-    let { deviceId } = ctx.params
-    if (!deviceId) {
-      ctx.body = { success: false, error: `missing deviceId` }
-      return
-    }
-    let value = deviceInterface.getDeviceValue(deviceId)
-    console.log(`/deviceStatus :: deviceId: ${deviceId}, value: ${value}`)
-    ctx.body = { value }
-  })
+routes.forEach(route => {
+  route({ router, dataStore, deviceInterface })
+})
 
 app
   .use(cors())
