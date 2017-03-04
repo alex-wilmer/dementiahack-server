@@ -1,14 +1,22 @@
 
 import DeviceInterface from './DeviceInterface'
+import Koa from 'koa'
+import koaRouter from 'koa-router'
+import html from './html'
+import Home from './Home'
 
-let username = `djazium@gmail.com`
-let password = `musicwizard3`
+let port = process.env.PORT || 3002
+let router = koaRouter()
+let app = new Koa()
 
-let main = async () => {
-  let deviceInterface = new DeviceInterface()
-  await deviceInterface.login(username, password)
-  let values = await deviceInterface.getDeviceValues()
-  console.log(values)
-}
+router
+  .get(`/`, ctx => {
+    ctx.body = html(Home)
+  })
 
-main()
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
+
+app.listen(port)
+console.log(`Listening on port: ${port}`)
