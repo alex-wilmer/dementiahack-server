@@ -1,8 +1,8 @@
 
 export default ({ router, dataStore }) => {
   router.post(`/registerAlarm`, async ctx => {
-    let { userId, deviceId, safeZone, dangerZone, timer } = ctx.request.body
-    if (!deviceId || !userId || !safeZone || !dangerZone || !timer) {
+    let { userId, deviceId, dangerZone, time } = ctx.request.body
+    if (!deviceId || !userId || !dangerZone || !time) {
       ctx.body = { success: false, error: `missing required parameters` }
       return
     }
@@ -14,7 +14,7 @@ export default ({ router, dataStore }) => {
       ctx.body = { success: false, error: `that device has not been registered to the user` }
       return
     }
-    dataStore.deviceAlarms[deviceId] = { userId, safeZone, dangerZone, timer }
+    dataStore.deviceAlarms[deviceId] = { userId, dangerZone, time }
     console.log(`/registerAlarm :: deviceId: ${deviceId}, alarm: `,
       dataStore.deviceAlarms[deviceId]
     )

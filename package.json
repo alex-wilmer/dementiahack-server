@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.23.0",
+    "flow-bin": "^0.40.0",
     "nodemon": "^1.11.0"
   }
 }
