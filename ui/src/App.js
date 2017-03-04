@@ -1,8 +1,18 @@
 import React from 'react'
+import styled from 'styled-components'
 import { compose, withState, lifecycle } from 'recompose'
 
 let api = `http://localhost:3002`
 let id = `35001a001447343432313031`
+
+let Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FC412F;
+  color: white;
+`
 
 let App = compose(
   withState(`state`, `setState`, { value: 0 }),
@@ -17,9 +27,9 @@ let App = compose(
 )(({
   state: { value },
 }) => (
-  <div>
+  <Wrapper>
     <h1>current resistor value: {value}</h1>
-  </div>
+  </Wrapper>
 ))
 
 export default App
