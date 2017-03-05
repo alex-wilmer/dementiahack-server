@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { compose, withState, lifecycle, withProps } from 'recompose'
 import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom'
+import moment from 'moment'
 
 import Icon from './Icon'
 
@@ -98,13 +99,15 @@ let NameAppliance = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     setName: async value => {
-      let r = await post(`setDeviceApplianceName`, {
-        userId,
-        deviceId,
-        name: value,
-      })
+      // let r = await post(`setDeviceApplianceName`, {
+      //   userId,
+      //   deviceId,
+      //   name: value,
+      // })
+      //
+      // if (r.success) push(`/configure`)
 
-      if (r.success) push(`/configure`)
+      push(`/configure`)
     },
   }))
 )(({ setName }) => (
@@ -122,11 +125,11 @@ let Configure = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     setDeviceThreshold: async () => {
-      let { value } = await get(`deviceStatus/${deviceId}`)
+      let { currentValue } = await get(`deviceStatus/${deviceId}`)
 
       await post(`registerDeviceThreshold`, {
         deviceId,
-        threshold: value,
+        threshold: currentValue,
       })
 
       push(`/setAlarm`)
@@ -148,7 +151,7 @@ let SetAlarm = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     setAlarm: async value => {
-      let r = await post(`registerDevice`, {
+      let r = await post(`registerAlarm`, {
         userId,
         deviceId,
         time: +value,
@@ -177,9 +180,8 @@ let Status = compose(
       setState(s => ({
         ...s,
         intervalId: setInterval(async () => {
-          let value = await get(`deviceStatus/${deviceId}`)
-          console.log(123, value)
-          // setState(s => ({ ...s, value }))
+          let { isOn, timeOn } = await get(`deviceStatus/${deviceId}`)
+          setState(s => ({ ...s, isOn, timeOn }))
         }, 500),
       }))
     },
@@ -189,7 +191,9 @@ let Status = compose(
   })
 )(({ state }) => (
   <Col style={{ padding: `2rem` }}>
-    {JSON.stringify(state)}
+    <h1>Oven</h1>
+    <Text>Status: {state.isOn ? `On` : `Off`}</Text>
+    {state.isOn && moment(state.timeOn).format(`mm:ss`)}
   </Col>
 ))
 
