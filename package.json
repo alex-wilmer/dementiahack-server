@@ -32,7 +32,8 @@
     "particle-api-js": "^6.4.3",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "recompose": "^0.22.0"
+    "recompose": "^0.22.0",
+    "twilio": "^2.11.1"
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.23.0",

@@ -16,3 +16,9 @@ export let firebase = {
   auth_provider_x509_cert_url: `https://www.googleapis.com/oauth2/v1/certs`,
   client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-p7u1y%40dementiahack-99509.iam.gserviceaccount.com`
 }
+
+export let twilio = {
+  sid: `AC30139f48a0af8b8adc14cd0d7f5b0ddb`,
+  authToken: `bc383c7d7f254623a580071d5385f55f`,
+  sendingNumber: `416-568-4263`,
+}
