@@ -12,9 +12,7 @@ export default ({ router, dataStore }) => {
     else {
       dataStore.users[userId].devices = [...dataStore.users[userId].devices, deviceId]
     }
-    if (!dataStore.devices[deviceId]) {
-      dataStore.devices[deviceId] = {}
-    }
+    dataStore.devices[deviceId] = { ...dataStore.devices[deviceId], deviceId }
     console.log(`/registerDevice :: userId: ${userId}, devices: `, dataStore.users[userId].devices)
     ctx.body = { success: true }
   })
