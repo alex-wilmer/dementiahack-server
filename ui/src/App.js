@@ -193,7 +193,7 @@ let Status = compose(
   <Col style={{ padding: `2rem` }}>
     <h1>Oven</h1>
     <Text>Status: {state.isOn ? `On` : `Off`}</Text>
-    {state.isOn && moment(state.timeOn).format(`mm:ss`)}
+    <Text>{state.isOn && state.timeOn && moment(state.timeOn).format(`mm:ss`)}</Text>
   </Col>
 ))
 
