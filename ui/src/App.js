@@ -9,6 +9,7 @@ let api = `http://localhost:3002`
 let deviceId = `35001a001447343432313031`
 let userId = `12345`
 
+let get = async endpoint => await fetch(`${api}/${endpoint}`).then(r => r.json())
 let post = async (endpoint, body) => await fetch(`${api}/${endpoint}`, {
   method: `POST`,
   headers: { 'Content-Type': `application/json` },
@@ -83,7 +84,7 @@ let New = compose(
         deviceId,
       })
 
-      if (r.success) push(`/configure`)
+      if (r.success) push(`/nameAppliance`)
     },
   }))
 )(({ postId }) => (
@@ -93,11 +94,35 @@ let New = compose(
   </Col>
 ))
 
+let NameAppliance = compose(
+  withRouter,
+  withProps(({ history: { push } }) => ({
+    setName: async value => {
+      let r = await post(`setDeviceApplianceName`, {
+        userId,
+        deviceId,
+        name: value,
+      })
+
+      if (r.success) push(`/configure`)
+    },
+  }))
+)(({ setName }) => (
+  <Col style={{ padding: `2rem` }}>
+    <Text>What appliance is are you putting this Lassie on?</Text>
+    <Input
+      type='text'
+      placeholder='(eg. Oven, Microwave)'
+      onKeyDown={e => e.key === `Enter` && setName(e)}
+    />
+  </Col>
+))
+
 let Configure = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     setDeviceThreshold: async () => {
-      let { value } = await fetch(`${api}/deviceStatus/${deviceId}`).then(r => r.json())
+      let { value } = await get(`deviceStatus/${deviceId}`)
 
       await post(`registerDeviceThreshold`, {
         deviceId,
@@ -144,28 +169,41 @@ let SetAlarm = compose(
   </Col>
 ))
 
-let App = compose(
-  withState(`state`, `setState`, { value: 0 }),
+let Status = compose(
+  withState(`state`, `setState`, { isOn: `pending`, timeOn: `pending`, intervalId: null }),
   lifecycle({
     componentDidMount() {
-      // setInterval(async () => {
-        // let value = await fetch(`${api}/value/${id}`).then(r => r.json())
-        // this.props.setState(() => ({ value }))
-      // }, 500)
+      let { setState } = this.props
+      setState(s => ({
+        ...s,
+        intervalId: setInterval(async () => {
+          let value = await get(`deviceStatus/${deviceId}`)
+          console.log(123, value)
+          // setState(s => ({ ...s, value }))
+        }, 500),
+      }))
+    },
+    componentWillUnmount() {
+      clearInterval(this.props.state.intervalId)
     },
   })
-)(({
-  state: { value },
-}) => (
+)(({ state }) => (
+  <Col style={{ padding: `2rem` }}>
+    {JSON.stringify(state)}
+  </Col>
+))
+
+let App = () => (
   <Router>
     <Wrapper>
       <Route exact path='/' component={Splash} />
       <Route path='/new' component={New} />
+      <Route path='/nameAppliance' component={NameAppliance} />
       <Route path='/configure' component={Configure} />
       <Route path='/setAlarm' component={SetAlarm} />
-      <Route path='/status' component={() => <div>thingy</div>} />
+      <Route path='/status' component={Status} />
     </Wrapper>
   </Router>
-))
+)
 
 export default App
