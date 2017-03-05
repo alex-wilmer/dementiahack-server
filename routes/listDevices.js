@@ -12,11 +12,12 @@ export default ({ router, dataStore }) => {
     }
 
     let devices = dataStore.users[userId].devices.map(deviceId => {
-      let { notificationId, threshold } = dataStore.devices[deviceId]
+      let { notificationId, threshold, name } = dataStore.devices[deviceId]
       return {
         deviceId,
         notificationId,
         threshold,
+        name,
         alarm: dataStore.deviceAlarms[deviceId],
       }
     })
