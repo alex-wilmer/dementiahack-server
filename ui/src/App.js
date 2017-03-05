@@ -7,6 +7,13 @@ import Icon from './Icon'
 
 let api = `http://localhost:3002`
 let deviceId = `35001a001447343432313031`
+let userId = `12345`
+
+let post = async (endpoint, body) => await fetch(`${api}/${endpoint}`, {
+  method: `POST`,
+  headers: { 'Content-Type': `application/json` },
+  body: JSON.stringify(body),
+}).then(r => r.json())
 
 let Wrapper = styled.div`
   height: 100vh;
@@ -71,14 +78,10 @@ let New = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     postId: async () => {
-      let r = await fetch(`${api}/registerDevice`, {
-        method: `POST`,
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-          userId: `12345`,
-          deviceId,
-        }),
-      }).then(r => r.json())
+      let r = await post(`registerDevice`, {
+        userId,
+        deviceId,
+      })
 
       if (r.success) push(`/configure`)
     },
@@ -91,15 +94,52 @@ let New = compose(
 ))
 
 let Configure = compose(
-  withProps({
+  withRouter,
+  withProps(({ history: { push } }) => ({
+    setDeviceThreshold: async () => {
+      let { value } = await fetch(`${api}/deviceStatus/${deviceId}`).then(r => r.json())
 
-  })
-)(() => (
-  <Col>
-    <Text>Is your appliance turned on now?</Text>
+      await post(`registerDeviceThreshold`, {
+        deviceId,
+        threshold: value,
+      })
+
+      push(`/setAlarm`)
+    },
+  }))
+)(({ setDeviceThreshold }) => (
+  <Col style={{ padding: `2rem` }}>
+    <Text>
+      Please place the device on the LED of your applicance, then turn both the
+      appliance and the device on. Then press OKAY.
+    </Text>
     <Row style={{ marginTop: `15px` }}>
-      <Button>YES</Button>
-      <Button style={{ marginLeft: `15px` }}>NO</Button>
+      <Button onClick={setDeviceThreshold}>OKAY</Button>
+    </Row>
+  </Col>
+))
+
+let SetAlarm = compose(
+  withRouter,
+  withProps(({ history: { push } }) => ({
+    setAlarm: async value => {
+      let r = await post(`registerDevice`, {
+        userId,
+        deviceId,
+        time: +value,
+      })
+
+      if (r.success) push(`/status`)
+    },
+  }))
+)(({ setAlarm }) => (
+  <Col style={{ padding: `2rem` }}>
+    <Text>
+      <div>Great! Make sure to turn off your appliance.</div>
+      <div>How many minutes before Lassie calls for help?</div>
+    </Text>
+    <Row style={{ marginTop: `15px` }}>
+      <Input type='text' onKeyDown={e => e.key === `Enter` && setAlarm(e.target.value)} />
     </Row>
   </Col>
 ))
@@ -122,6 +162,8 @@ let App = compose(
       <Route exact path='/' component={Splash} />
       <Route path='/new' component={New} />
       <Route path='/configure' component={Configure} />
+      <Route path='/setAlarm' component={SetAlarm} />
+      <Route path='/status' component={() => <div>thingy</div>} />
     </Wrapper>
   </Router>
 ))
