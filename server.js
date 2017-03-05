@@ -35,7 +35,7 @@ let deviceInterface = new DeviceInterface()
 deviceInterface.login(particleConfig.username, particleConfig.password)
 
 setInterval(() => {
-  deviceWatcher({ dataStore, deviceInterface })
+  deviceWatcher({ dataStore, deviceInterface, firebaseAdmin })
 }, 3000)
 
 routes.forEach(route => {
