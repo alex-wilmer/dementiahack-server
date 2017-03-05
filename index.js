@@ -4,7 +4,7 @@ require(`babel-register`)({
     `transform-es2015-modules-commonjs`,
     `transform-async-to-generator`,
     `transform-object-rest-spread`,
-    `transform-class-properties`
+    `transform-class-properties`,
   ],
 })
 

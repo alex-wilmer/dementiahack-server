@@ -5,6 +5,7 @@ import registerContact from './registerContact'
 import registerDevice from './registerDevice'
 import registerDeviceThreshold from './registerDeviceThreshold'
 import registerNotificationId from './registerNotificationId'
+import setDeviceApplianceName from './setDeviceApplianceName'
 
 export default [
   deviceStatus,
@@ -13,4 +14,5 @@ export default [
   registerDevice,
   registerDeviceThreshold,
   registerNotificationId,
+  setDeviceApplianceName,
 ]
