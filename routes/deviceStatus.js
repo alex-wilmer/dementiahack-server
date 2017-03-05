@@ -14,7 +14,7 @@ export default ({ router, dataStore, deviceInterface }) => {
       timeOn = watcher && watcher.dangerStamp ? Date.now() - watcher.dangerStamp : null
       isOn = currentValue >= threshold
     }
-    console.log(`/deviceStatus`, JSON.stringify({ ...device, currentValue }, null, 2))
+    console.log(`/deviceStatus`, JSON.stringify({ ...device, currentValue, isOn, timeOn }, null, 2))
     ctx.body = { currentValue, isOn, timeOn }
   })
 }
