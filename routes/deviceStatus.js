@@ -11,10 +11,6 @@ export default ({ router, dataStore, deviceInterface }) => {
     let currentValue = deviceInterface.getDeviceValue(deviceId)
     if (device) {
       let { watcher, threshold } = device
-      console.log(123, watcher)
-      if (watcher) {
-        console.log(456, watcher.dangerStamp)
-      }
       timeOn = watcher && watcher.dangerStamp ? Date.now() - watcher.dangerStamp : null
       isOn = currentValue >= threshold
     }
