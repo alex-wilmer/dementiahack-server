@@ -6,7 +6,7 @@ export default ({ router, dataStore }) => {
       ctx.body = { success: false, error: `missing deviceId or name` }
       return
     }
-    dataStore.devices[deviceId] = { ...dataStore.devices[deviceId], name }
+    dataStore.devices[deviceId].name = name
     console.log(`/setDeviceApplianceName :: deviceId: ${deviceId}, device: `,
       dataStore.devices[deviceId]
     )
