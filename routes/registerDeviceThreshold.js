@@ -7,7 +7,9 @@ export default ({ router, dataStore }) => {
       return
     }
     dataStore.devices[deviceId] = { ...dataStore.devices[deviceId], threshold }
-    console.log(`/registerDeviceThreshold :: deviceId: ${deviceId}, threshold: ${threshold}`)
+    console.log(`/registerDeviceThreshold :: deviceId: ${deviceId}, device: `,
+      dataStore.devices[deviceId]
+    )
     ctx.body = { success: true }
   })
 }
