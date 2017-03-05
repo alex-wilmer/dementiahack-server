@@ -99,13 +99,12 @@ let NameAppliance = compose(
   withRouter,
   withProps(({ history: { push } }) => ({
     setName: async value => {
-      // let r = await post(`setDeviceApplianceName`, {
-      //   userId,
-      //   deviceId,
-      //   name: value,
-      // })
-      //
-      // if (r.success) push(`/configure`)
+      let r = await post(`setDeviceApplianceName`, {
+        deviceId,
+        name: value,
+      })
+
+      if (r.success) push(`/configure`)
 
       push(`/configure`)
     },
@@ -116,7 +115,7 @@ let NameAppliance = compose(
     <Input
       type='text'
       placeholder='(eg. Oven, Microwave)'
-      onKeyDown={e => e.key === `Enter` && setName(e)}
+      onKeyDown={e => e.key === `Enter` && setName(e.target.value)}
     />
   </Col>
 ))
@@ -129,7 +128,7 @@ let Configure = compose(
 
       await post(`registerDeviceThreshold`, {
         deviceId,
-        threshold: currentValue,
+        threshold: currentValue - 400,
       })
 
       push(`/setAlarm`)
@@ -163,7 +162,8 @@ let SetAlarm = compose(
 )(({ setAlarm }) => (
   <Col style={{ padding: `2rem` }}>
     <Text>
-      <div>Great! Make sure to turn off your appliance.</div>
+      <div>Great!</div>
+      <div>Make sure to turn off your appliance.</div>
       <div>How many minutes before Lassie calls for help?</div>
     </Text>
     <Row style={{ marginTop: `15px` }}>
@@ -173,7 +173,7 @@ let SetAlarm = compose(
 ))
 
 let Status = compose(
-  withState(`state`, `setState`, { isOn: `pending`, timeOn: `pending`, intervalId: null }),
+  withState(`state`, `setState`, { isOn: `pending`, timeOn: null, intervalId: null }),
   lifecycle({
     componentDidMount() {
       let { setState } = this.props
@@ -192,7 +192,7 @@ let Status = compose(
 )(({ state }) => (
   <Col style={{ padding: `2rem` }}>
     <h1>Oven</h1>
-    <Text>Status: {state.isOn ? `On` : `Off`}</Text>
+    <Text>Status: {state.isOn !== `pending` && state.isOn !== false ? `On` : `Off`}</Text>
     <Text>{state.isOn && state.timeOn && moment(state.timeOn).format(`mm:ss`)}</Text>
   </Col>
 ))
