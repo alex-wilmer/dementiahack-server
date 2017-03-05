@@ -7,7 +7,10 @@ export default ({ router, dataStore }) => {
       return
     }
     if (!dataStore.users[userId]) {
-      dataStore.users[userId] = { devices: [deviceId] }
+      dataStore.users[userId] = {
+        devices: [deviceId],
+        contacts: [],
+      }
     }
     else {
       dataStore.users[userId].devices = [...dataStore.users[userId].devices, deviceId]

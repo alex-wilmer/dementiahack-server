@@ -6,11 +6,13 @@ export default ({ router, dataStore }) => {
       ctx.body = { success: false, error: `missing required parameters` }
       return
     }
-    if (!dataStore.contacts[userId]) {
-      dataStore.contacts[userId] = []
+    if (!dataStore.users[userId]) {
+      ctx.body = { success: false, error: `user does not exist yet` }
+      return
     }
-    dataStore.contacts[userId] = [...dataStore.contacts[userId], contact]
-    console.log(`/registerContact :: userId: ${userId}, contact: `, contact)
+    let contacts = [...dataStore.users[userId].contacts, contact]
+    dataStore.users[userId] = { ...dataStore.users[userId], contacts }
+    console.log(`/registerContact :: userId: ${userId}, user: `, dataStore.users[userId])
     ctx.body = { success: true }
   })
 }

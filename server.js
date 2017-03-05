@@ -15,13 +15,11 @@ type TDataStore = {|
   devices: Object,
   deviceAlarms: Object,
   users: Object,
-  contacts: Object,
 |}
 let dataStore: TDataStore = {
   devices: {},            // key = deviceId
   deviceAlarms: {},       // key = deviceId
   users: {},              // key = userId
-  contacts: {},           // key = userId
 }
 
 let port = process.env.PORT || 3002

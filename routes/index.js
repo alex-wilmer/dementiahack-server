@@ -1,5 +1,6 @@
 
 import deviceStatus from './deviceStatus'
+import listContacts from './listContacts'
 import listDevices from './listDevices'
 import registerAlarm from './registerAlarm'
 import registerContact from './registerContact'
@@ -10,6 +11,7 @@ import setDeviceApplianceName from './setDeviceApplianceName'
 
 export default [
   deviceStatus,
+  listContacts,
   listDevices,
   registerAlarm,
   registerContact,

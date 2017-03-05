@@ -11,8 +11,8 @@ export default ({ router, dataStore, deviceInterface }) => {
     let currentValue = deviceInterface.getDeviceValue(deviceId)
     if (device) {
       let { watcher, threshold } = device
-      isOn = currentValue >= threshold
       timeOn = watcher && watcher.dangerStamp ? Date.now() - watcher.dangerStamp : null
+      isOn = timeOn && currentValue >= threshold ? true : false
     }
     console.log(`/deviceStatus :: deviceId: ${deviceId}, value: ${currentValue}`)
     ctx.body = { currentValue, isOn, timeOn }
